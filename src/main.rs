@@ -1,96 +1,56 @@
-use std::{cmp, collections::HashSet};
-
+use crate::{array::*, sets::*};
+mod array;
+mod sets;
 fn main() {
-    // array();
-    sets();
-}
-fn array() {
-    let array = [1, 2, 3, 4];
-    println!("{}", average_of_array(array));
-    println!("{}", average_of_array_double(array));
-    println!("{}", smallest_element_of_array(array));
-    println!("{:?}", reverse(array));
-    println!("{:?}", return_even(array));
-}
+    let (ish_array, ish_array_double) = generate_arrays();
+    array(&ish_array, &ish_array_double);
 
-fn sets() {
-    let a: HashSet<usize> = [1, 2, 3, 4].iter().cloned().collect();
-    let b: HashSet<usize> = [3, 4, 5, 6].iter().cloned().collect();
-    println!("{:?}", union(a, b));
-    let a: HashSet<usize> = [1, 2, 3, 4].iter().cloned().collect();
-    let b: HashSet<usize> = [3, 4, 5, 6].iter().cloned().collect();
-    println!("{:?}", intersect(a, b));
-    let a: HashSet<usize> = [1, 2, 3, 4].iter().cloned().collect();
-    let b: HashSet<usize> = [3, 4, 5, 6].iter().cloned().collect();
-    println!("{:?}", complement(a, b));
-    let a: HashSet<usize> = [1, 2, 3, 4].iter().cloned().collect();
-    let b: HashSet<usize> = [3, 4, 5, 6].iter().cloned().collect();
-    println!("{:?}", cardinality_of_union(a, b));
+    let set_a = generate_set(-100, 40);
+    let set_b = generate_set(-100, 70);
+    sets(&set_a, &set_b);
 }
+fn array(ish_array: &Vec<isize>, ish_array_double: &Vec<f32>) {
+    println!("Original integer array: \n{:?}", ish_array);
+    println!("Original double array: \n{:?}", ish_array_double);
 
-fn average_of_array(array: [usize; 4]) -> u8 {
-    let mut sum = 0;
-    for x in array {
-        sum += x;
-    }
-    return (sum / array.len()).try_into().unwrap();
-}
-fn average_of_array_double(array: [usize; 4]) -> f32 {
-    let mut sum = 0;
-    for x in array {
-        sum += x;
-    }
-    return (sum / array.len()) as f32;
-}
-fn smallest_element_of_array(array: [usize; 4]) -> usize {
-    return return_smallest(
-        &return_smallest(&array[2], &array[3]),
-        &return_smallest(&array[0], &array[1]),
+    println!(
+        "\nAverage of integer array: {}",
+        average_of_array(ish_array)
+    );
+    println!(
+        "Average of double array: {}",
+        average_of_array_double(ish_array_double)
+    );
+    println!(
+        "\nSmallest element of the integer array: {}",
+        smallest_element_of_array(ish_array)
+    );
+    println!(
+        "\nReverse array of the integer array: {:?}",
+        reverse(ish_array)
+    );
+    println!(
+        "\nAll even elements of the integer array: {:?}",
+        return_even(ish_array)
     );
 }
-fn return_smallest(a: &usize, b: &usize) -> usize {
-    match a.cmp(b) {
-        cmp::Ordering::Less => return a.clone(),
-        cmp::Ordering::Greater => return b.clone(),
-        cmp::Ordering::Equal => return a.clone(),
-    }
-}
-fn reverse(array: [usize; 4]) -> [usize; 4] {
-    return [array[3], array[2], array[1], array[0]];
-}
-fn return_even(array: [usize; 4]) -> Vec<usize> {
-    let mut v: Vec<usize> = Vec::new();
-    for x in array {
-        match x % 2 {
-            0 => v.push(x),
-            _ => continue,
-        }
-    }
-    v
-}
 
-fn union(mut a: HashSet<usize>, b: HashSet<usize>) -> HashSet<usize> {
-    a.extend(&b);
-    return a;
-}
-fn intersect(a: HashSet<usize>, b: HashSet<usize>) -> HashSet<usize> {
-    return &a & &b;
-}
-
-fn complement(mut a: HashSet<usize>, b: HashSet<usize>) -> HashSet<usize> {
-    a.extend(&b);
-    let mut c: HashSet<usize> = HashSet::new();
-    for x in 0..99 {
-        c.insert(x);
-    }
-    return &a ^ &c;
-}
-
-fn cardinality_of_union(mut a: HashSet<usize>, b: HashSet<usize>) -> usize {
-    a.extend(&b);
-    return a.len();
-}
-
-fn cardinality(a: HashSet<usize>) -> usize {
-    return a.len();
+fn sets(array_a: &Vec<isize>, array_b: &Vec<isize>) {
+    println!("\nOriginal set A: {:?}", array_a);
+    println!("Original set B: {:?}", array_b);
+    let mut cloned_a = array_a.clone();
+    println!(
+        "\nUnion of set A and B: {:?}",
+        union(&mut cloned_a, array_b)
+    );
+    println!(
+        "\nIntersect of set A and B: {:?}",
+        intersect(array_a, array_b)
+    );
+    println!("\nComplement of set A: {:?}", complement(array_a));
+    println!("\nCardinality of set A: {:?}", cardinality(array_a));
+    println!(
+        "Cardinality of set A and B: {:?}",
+        cardinality_of_union(&mut cloned_a, array_b)
+    );
 }
